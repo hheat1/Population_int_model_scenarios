@@ -143,15 +143,20 @@ def bus_adjacency(stoproute,lsoa_list,route_freqs):
     adj = adj.astype(float)
     adj = adj.groupby(level="lsoa11cd").mean()
     bus2route = pd.merge(lsoa_list, adj, how='left',on='lsoa11cd').set_index('lsoa11cd')
+    bus2routeT = bus2route.transpose()
 
     #Adjacency matrix LSOA x LSOA
-    bus2route = np.array(bus2route)
-    bus2routeT = bus2route.transpose()
-    lsoa2lsoa = np.dot(bus2route,bus2routeT)**0.5 #check that this actually does whay I think it does
-    lsoa2lsoa[np.diag_indices_from(lsoa2lsoa)] = 0
+    lsoa2lsoa = np.sqrt(bus2route.dot(bus2routeT))
+    np.fill_diagonal(lsoa2lsoa.values,0)
 
-    lsoa2lsoa = pd.DataFrame(lsoa2lsoa)
-    lsoa2lsoa = lsoa2lsoa.fillna(0)
+    # Comment this out if using original bus frequencies
+    OD_lsoa = pd.read_csv('resources/Bus_improvementlsoa2lsoa.csv')
+    for i in range (len(OD_lsoa)):
+        x = OD_lsoa['O_lsoa'][i]
+        y = OD_lsoa['D_lsoa'][i]
+        lsoa2lsoa = lsoa2lsoa.replace([lsoa2lsoa[x][y]],lsoa2lsoa[x][y]*1.2)
+    #
+
 
     #m values created
     m_bus = lsoa2lsoa.copy()
@@ -234,7 +239,8 @@ def monte_carlo_runs(m_paths, n, lsoa_data, paths_matrix, comp_ratio, msoa_on=Fa
     else:
         edges = np.zeros((len(m_paths), len(m_paths), n))
 
-    theta = 0.18 #number given by one of the optimise_for_theta runs
+
+
 
     for i in range(n):
 
@@ -243,7 +249,7 @@ def monte_carlo_runs(m_paths, n, lsoa_data, paths_matrix, comp_ratio, msoa_on=Fa
         attractivity1, attractivity2, alpha, xmin = sample_attractivities(edu_ratios, income_params, 1)
         #alpha = 1.45653 #mean fixed alpha from 1000 runs
 
-        # theta = np.exp(np.log(xmin**2) - (base_m*np.log(eps)))
+        theta = np.exp(np.log(xmin**2) - (base_m*np.log(eps)))
         dc = base_m * (alpha - 1)
 
 
@@ -251,7 +257,8 @@ def monte_carlo_runs(m_paths, n, lsoa_data, paths_matrix, comp_ratio, msoa_on=Fa
         attractivity1 = attractivity1.reshape((len(attractivity1),1))
         attractivity2 = attractivity2.reshape((len(attractivity2),1))
 
-        #population amplification
+        #population amplification for growth in population
+        # new_pop = pd.read_csv('resources/2(a)developments_pop_growth_data.csv', usecols= ["new population"])
         pop = np.asarray(edu_counts).reshape((len(edu_counts), 1))
 
 
@@ -339,6 +346,9 @@ if __name__ == '__main__':
     lsoa_list = pd.read_csv("resources/E47000002_KS101EW.csv")['lsoa11cd']
     route_freqs = pd.read_csv('resources/Bus_routes_frequency.csv', usecols= ["line","average"]).astype(str)
     m_paths = bus_adjacency(stoproute, lsoa_list, route_freqs)
+
+    # Bus improvements
+    # m_paths = pd.read_csv('resources/Transport_2.csv').values
     # -----------------------------------------
     # Normal paths
     # -----------------------------------------
@@ -370,7 +380,7 @@ if __name__ == '__main__':
         "edge_widths": edge_widths
         }
 
-    save_obj(normal, "normal_layout_"+str(n)+"run_bus_given_theta")
+    save_obj(normal, "normal_layout_"+str(n)+"bus5_pop1_median_theta")
 
     print(time.time()-t1)
 
