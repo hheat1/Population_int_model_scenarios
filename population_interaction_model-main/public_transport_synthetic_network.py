@@ -240,6 +240,7 @@ def monte_carlo_runs(m_paths, n, lsoa_data, paths_matrix, comp_ratio, msoa_on=Fa
         edges = np.zeros((len(m_paths), len(m_paths), n))
 
 
+    theta = 0.216 # theta from 100 runs of optimisation
 
 
     for i in range(n):
@@ -249,7 +250,7 @@ def monte_carlo_runs(m_paths, n, lsoa_data, paths_matrix, comp_ratio, msoa_on=Fa
         attractivity1, attractivity2, alpha, xmin = sample_attractivities(edu_ratios, income_params, 1)
         #alpha = 1.45653 #mean fixed alpha from 1000 runs
 
-        theta = np.exp(np.log(xmin**2) - (base_m*np.log(eps)))
+        # theta = np.exp(np.log(xmin**2) - (base_m*np.log(eps)))
         dc = base_m * (alpha - 1)
 
 
@@ -382,7 +383,7 @@ if __name__ == '__main__':
         "edge_widths": edge_widths
         }
 
-    save_obj(normal, "normal_layout_"+str(n)+"test1_new")
+    save_obj(normal, "normal_layout_"+str(n)+"test5_new")
 
     print(time.time()-t1)
 
