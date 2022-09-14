@@ -259,10 +259,10 @@ def monte_carlo_runs(m_paths, n, lsoa_data, paths_matrix, comp_ratio, msoa_on=Fa
         attractivity2 = attractivity2.reshape((len(attractivity2),1))
 
         #population amplification for growth in population
-        # new_pop = pd.read_csv('resources/2(a)developments_pop_growth_data.csv', usecols= ["new population"])
-        # pop = np.asarray(new_pop).reshape((len(new_pop), 1))
+        new_pop = pd.read_csv('resources/2(a)developments_pop_growth_data.csv', usecols= ["new population"])
+        pop = np.asarray(new_pop).reshape((len(new_pop), 1))
         #existing population
-        pop = np.asarray(edu_counts).reshape((len(edu_counts), 1))
+        # pop = np.asarray(edu_counts).reshape((len(edu_counts), 1))
 
 
         if is_shuffled is None:
@@ -383,7 +383,7 @@ if __name__ == '__main__':
         "edge_widths": edge_widths
         }
 
-    save_obj(normal, "normal_layout_"+str(n)+"test9_new")
+    save_obj(normal, "normal_layout_"+str(n)+"test10_new")
 
     print(time.time()-t1)
 
