@@ -150,11 +150,11 @@ def bus_adjacency(stoproute,lsoa_list,route_freqs):
     np.fill_diagonal(lsoa2lsoa.values,0)
 
     # Comment this out if using original bus frequencies
-    OD_lsoa = pd.read_csv('resources/Bus_improvementlsoa2lsoa.csv')
-    for i in range (len(OD_lsoa)):
-        x = OD_lsoa['O_lsoa'][i]
-        y = OD_lsoa['D_lsoa'][i]
-        lsoa2lsoa = lsoa2lsoa.replace([lsoa2lsoa[x][y]],lsoa2lsoa[x][y]*1.2)
+    # OD_lsoa = pd.read_csv('resources/Bus_improvementlsoa2lsoa.csv')
+    # for i in range (len(OD_lsoa)):
+    #     x = OD_lsoa['O_lsoa'][i]
+    #     y = OD_lsoa['D_lsoa'][i]
+    #     lsoa2lsoa = lsoa2lsoa.replace([lsoa2lsoa[x][y]],lsoa2lsoa[x][y]*1.2)
     #
 
 
@@ -259,6 +259,8 @@ def monte_carlo_runs(m_paths, n, lsoa_data, paths_matrix, comp_ratio, msoa_on=Fa
 
         #population amplification for growth in population
         # new_pop = pd.read_csv('resources/2(a)developments_pop_growth_data.csv', usecols= ["new population"])
+        # pop = np.asarray(new_pop).reshape((len(new_pop), 1))
+        #existing population
         pop = np.asarray(edu_counts).reshape((len(edu_counts), 1))
 
 
@@ -380,7 +382,7 @@ if __name__ == '__main__':
         "edge_widths": edge_widths
         }
 
-    save_obj(normal, "normal_layout_"+str(n)+"bus5_pop1_median_theta")
+    save_obj(normal, "normal_layout_"+str(n)+"test1_new")
 
     print(time.time()-t1)
 
